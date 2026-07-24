@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Camera, Upload, Heart, Smartphone, Sparkles, Plus, Image as ImageIcon, X, ChevronLeft, ChevronRight, Pause, Play, Maximize2 } from 'lucide-react';
 import { INITIAL_GALLERY } from '../data';
 import { GalleryPhoto } from '../types';
-import { saveGalleryPhoto, likeGalleryPhoto, subscribeToGalleryPhotos } from '../lib/firebase';
+import { saveGalleryPhoto, likeGalleryPhoto, subscribeToGalleryPhotos } from '../firebase';
 
 export default function Gallery() {
   const [photos, setPhotos] = useState<GalleryPhoto[]>(INITIAL_GALLERY);
