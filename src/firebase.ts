@@ -12,7 +12,7 @@ import {
   updateDoc 
 } from 'firebase/firestore';
 import { RsvpGuest, GalleryPhoto } from '../types';
-import { INITIAL_GALLERY } from '../data';
+import { INITIAL_GALLERY } from '../src/data';
 import firebaseAppletConfig from '../../firebase-applet-config.json';
 
 // Read Firebase configuration from environment variables or firebase-applet-config.json
