@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Mail, CheckCircle2, AlertCircle, Sparkles, User, Phone, Check, Heart } from 'lucide-react';
 import { RsvpGuest } from '../types';
 import { WEDDING_DETAILS } from '../data';
-import { saveRsvp, isFirebaseConfigured } from '../lib/firebase';
+import { saveRsvp, isFirebaseConfigured } from '../firebase';
 
 export default function RsvpForm() {
   const [fullName, setFullName] = useState('');
