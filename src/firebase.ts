@@ -14,6 +14,7 @@ import {
 import { RsvpGuest, GalleryPhoto } from '../types';
 import { INITIAL_GALLERY } from '../src/data';
 import firebaseAppletConfig from '../firebase-applet-config.json';
+import {getDoc} from "firebase/firestore";
 
 // Read Firebase configuration from environment variables or firebase-applet-config.json
 const firebaseConfig = {
@@ -324,25 +325,20 @@ export async function getGalleryPhotos(): Promise<GalleryPhoto[]> {
  */
 export async function likeGalleryPhoto(photoId: string): Promise<void> {
   const db = getDb();
-  const local = getLocalGallery();
-  const currentPhoto = local.find(p => p.id === photoId);
-  const newLikes = (currentPhoto?.likes || 0) + 1;
+ export async function likeGalleryPhoto(photoId: string): Promise<void> {
+  const db = getDb();
+  if (!db) return;
 
-  if (db) {
-    try {
-      const docRef = doc(db, GALLERY_COLLECTION, photoId);
-      await updateDoc(docRef, { likes: newLikes }).catch(async () => {
-        if (currentPhoto) {
-          await setDoc(docRef, { ...currentPhoto, likes: newLikes });
-        }
-      });
-    } catch (error) {
-      console.warn('Failed to update photo likes in Firebase:', error);
-    }
+  const docRef = doc(db, GALLERY_COLLECTION, photoId);
+  const snapshot = await getDoc(docRef);
+
+  if (snapshot.exists()) {
+    const photo = snapshot.data() as GalleryPhoto;
+    await updateDoc(docRef, {
+      likes: (photo.likes || 0) + 1
+    });
   }
-
-  const updated = local.map(p => p.id === photoId ? { ...p, likes: newLikes } : p);
-  saveLocalGallery(updated);
+}
 }
 
 /**
@@ -370,14 +366,6 @@ export function subscribeToGalleryPhotos(onUpdate: (photos: GalleryPhoto[]) => v
     }
   }
 
-  const handleLocalUpdate = () => {
-    onUpdate(getLocalGallery());
-  };
-  window.addEventListener('gallery_database_updated', handleLocalUpdate);
-  handleLocalUpdate();
-
-  return () => {
-    window.removeEventListener('gallery_database_updated', handleLocalUpdate);
-  };
+ return()=>{};
 }
 
