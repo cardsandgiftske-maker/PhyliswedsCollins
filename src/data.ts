@@ -157,4 +157,4 @@ export const COLOR_SWATCHES: ColorSwatch[] = [
   }
 ];
 
-export const INITIAL_GALLERY: GalleryPhoto[];
+export const INITIAL_GALLERY: GalleryPhoto[]=[];
