@@ -42,6 +42,66 @@ export default function Gallery() {
     setCurrentIndex((prev) => (prev - 1 + photos.length) % photos.length);
   };
 
+  
+  // Lightbox Next / Prev Handlers
+  const handleLightboxNext = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    if (photos.length === 0) return;
+    const nextIndex = (currentIndex + 1) % photos.length;
+    setCurrentIndex(nextIndex);
+    setActivePhoto(photos[nextIndex]);
+  };
+
+  const handleLightboxPrev = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    if (photos.length === 0) return;
+    const prevIndex = (currentIndex - 1 + photos.length) % photos.length;
+    setCurrentIndex(prevIndex);
+    setActivePhoto(photos[prevIndex]);
+  };
+
+  // Keyboard navigation for lightbox
+  useEffect(() => {
+    if (!activePhoto) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight') {
+        handleLightboxNext();
+      } else if (e.key === 'ArrowLeft') {
+        handleLightboxPrev();
+      } else if (e.key === 'Escape') {
+        setActivePhoto(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activePhoto, currentIndex, photos]);
+
+  // Download Photo Handler
+  const handleDownloadPhoto = async (e: React.MouseEvent, photo: GalleryPhoto) => {
+    e.stopPropagation();
+    try {
+      const response = await fetch(photo.url);
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      const cleanCaption = (photo.caption || 'wedding-photo').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      link.download = `${cleanCaption}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      window.URL.revokeObjectURL(blobUrl);
+      document.body.removeChild(link);
+    } catch (err) {
+      // Fallback if CORS or local blob fails
+      const link = document.createElement('a');
+      link.href = photo.url;
+      link.target = '_blank';
+      link.download = 'wedding-photo.jpg';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
   // Auto-play timer
   useEffect(() => {
     if (isAutoplay && !isHovered && !isModalOpen && !activePhoto && photos.length > 0) {
@@ -192,7 +252,14 @@ export default function Gallery() {
                         <Heart className="w-4 h-4 fill-white" />
                         <span>{currentPhoto.likes || 1} Likes</span>
                       </button>
-
+                      <button
+                        onClick={(e) => handleDownloadPhoto(e, currentPhoto)}
+                        className="p-2.5 bg-white/20 hover:bg-white/30 text-white rounded-full backdrop-blur-md cursor-pointer transition-all"
+                        title="Download Photo"
+                      >
+                        <Download className="w-4 h-4" />
+                      </button>
+                      
                       <button
                         onClick={(e) => { e.stopPropagation(); setActivePhoto(currentPhoto); }}
                         className="p-2.5 bg-white/20 hover:bg-white/30 text-white rounded-full backdrop-blur-md cursor-pointer transition-all"
@@ -381,38 +448,110 @@ export default function Gallery() {
         )}
       </AnimatePresence>
 
-      {/* Lightbox Modal */}
+      {/* Lightbox Modal with Scroll Navigation & Download */}
       <AnimatePresence>
         {activePhoto && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md cursor-pointer select-none"
+            className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/95 backdrop-blur-md cursor-pointer select-none"
             onClick={() => setActivePhoto(null)}
           >
+            {/* Top Toolbar */}
             <div 
-              className="relative max-h-[90vh] flex flex-col items-center cursor-default"
+              className="absolute top-4 inset-x-4 max-w-5xl mx-auto flex items-center justify-between z-30 pointer-events-none"
               onClick={(e) => e.stopPropagation()}
             >
-              <button
-                onClick={() => setActivePhoto(null)}
-                className="absolute -top-12 right-0 text-white hover:text-amber-300 p-2 cursor-pointer flex items-center gap-1.5 text-xs font-sans font-semibold tracking-wider uppercase bg-black/50 hover:bg-black/80 px-3.5 py-1.5 rounded-full border border-white/20 backdrop-blur-md transition-all shadow-lg"
-                aria-label="Close photo view"
-              >
-                <span>Close</span>
-                <X className="w-4 h-4" />
-              </button>
+              {/* Counter */}
+              <div className="px-3.5 py-1.5 rounded-full bg-stone-900/80 backdrop-blur-md border border-white/20 text-white text-xs font-mono font-semibold tracking-wider shadow-lg">
+                {currentIndex + 1} / {photos.length}
+              </div>
 
-              <div className="relative overflow-hidden rounded-2xl shadow-2xl border border-white/15 bg-stone-950 flex flex-col items-center max-w-[90vw]">
-                <img
-                  src={activePhoto.url}
-                  alt={activePhoto.caption}
-                  className="max-h-[72vh] w-auto max-w-full object-contain"
-                />
-                <div className="w-full p-4 bg-stone-950 text-center text-white border-t border-white/10">
-                  <h4 className="font-serif text-xl font-medium text-amber-200">{activePhoto.caption}</h4>
-                  <p className="text-xs text-stone-400 font-sans mt-1">Shared by {activePhoto.uploaderName || 'Guest'}</p>
+              {/* Action Buttons: Download & Close */}
+              <div className="flex items-center gap-2 pointer-events-auto">
+                <button
+                  onClick={(e) => handleDownloadPhoto(e, activePhoto)}
+                  className="text-white hover:text-amber-300 bg-stone-900/80 hover:bg-stone-900 px-3.5 py-1.5 rounded-full border border-white/20 backdrop-blur-md transition-all shadow-lg text-xs font-sans font-semibold flex items-center gap-1.5 cursor-pointer"
+                  title="Download Photo"
+                >
+                  <Download className="w-4 h-4 text-amber-400" />
+                  <span className="hidden sm:inline">Download</span>
+                </button>
+
+                <button
+                  onClick={() => setActivePhoto(null)}
+                  className="text-white hover:text-rose-300 bg-stone-900/80 hover:bg-stone-900 px-3.5 py-1.5 rounded-full border border-white/20 backdrop-blur-md transition-all shadow-lg text-xs font-sans font-semibold flex items-center gap-1.5 cursor-pointer"
+                  aria-label="Close photo view"
+                >
+                  <span>Close</span>
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+            </div>
+
+            {/* Left Scroll Navigation Button */}
+            <button
+              onClick={handleLightboxPrev}
+              className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-stone-900/70 hover:bg-stone-900 text-white flex items-center justify-center backdrop-blur-md border border-white/20 shadow-2xl cursor-pointer transition-all hover:scale-110 active:scale-90 z-30"
+              aria-label="Previous Photo"
+            >
+              <ChevronLeft className="w-7 h-7 text-amber-200" />
+            </button>
+
+            {/* Right Scroll Navigation Button */}
+            <button
+              onClick={handleLightboxNext}
+              className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-stone-900/70 hover:bg-stone-900 text-white flex items-center justify-center backdrop-blur-md border border-white/20 shadow-2xl cursor-pointer transition-all hover:scale-110 active:scale-90 z-30"
+              aria-label="Next Photo"
+            >
+              <ChevronRight className="w-7 h-7 text-amber-200" />
+            </button>
+
+            {/* Main Lightbox Card */}
+            <div 
+              className="relative max-h-[85vh] max-w-[88vw] sm:max-w-[80vw] flex flex-col items-center cursor-default z-20"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="relative overflow-hidden rounded-2xl shadow-2xl border border-white/15 bg-stone-950 flex flex-col items-center max-w-full">
+                <AnimatePresence mode="wait">
+                  <motion.img
+                       key={activePhoto.id}
+                    initial={{ opacity: 0, scale: 0.96 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.96 }}
+                    transition={{ duration: 0.25 }}
+                    src={activePhoto.url}
+                    alt={activePhoto.caption}
+                    className="max-h-[68vh] sm:max-h-[72vh] w-auto max-w-full object-contain"
+                  />
+                </AnimatePresence>
+
+                <div className="w-full p-4 sm:p-5 bg-stone-950/95 text-white border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+                  <div>
+                    <h4 className="font-serif text-lg sm:text-xl font-medium text-amber-200 leading-snug">{activePhoto.caption}</h4>
+                    <p className="text-xs text-stone-400 font-sans mt-0.5">Shared by {activePhoto.uploaderName || 'Guest'}</p>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      onClick={(e) => handleLike(e, activePhoto.id)}
+                      className="flex items-center gap-1.5 bg-rose-600/90 hover:bg-rose-600 text-white px-3.5 py-1.5 rounded-full border border-rose-400/40 font-sans text-xs font-bold shadow-md cursor-pointer active:scale-90 transition-all"
+                    >
+                      <Heart className="w-3.5 h-3.5 fill-white" />
+                      <span>{activePhoto.likes || 1}</span>
+                    </button>
+
+                    <button
+                      onClick={(e) => handleDownloadPhoto(e, activePhoto)}
+                      className="flex items-center gap-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 px-3.5 py-1.5 rounded-full border border-amber-400/30 font-sans text-xs font-semibold cursor-pointer active:scale-90 transition-all"
+                      title="Download Photo"
+                      >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Download</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -421,5 +560,4 @@ export default function Gallery() {
       </AnimatePresence>
     </section>
   );
-}
 
