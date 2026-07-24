@@ -157,41 +157,4 @@ export const COLOR_SWATCHES: ColorSwatch[] = [
   }
 ];
 
-export const INITIAL_GALLERY: GalleryPhoto[] = [
-  {
-    id: 'photo-1',
-    url: '/src/assets/images/carol_and_john_portrait_1784461506194.jpg',
-    caption: 'Phylis & Collins - Celebration of Love',
-    uploaderName: 'PhilCollins Couple',
-    deviceInfo: 'iPhone 15 Pro',
-    likes: 24,
-    uploadedAt: 'Recent'
-  },
-  {
-    id: 'photo-2',
-    url: '/src/assets/images/reception_venue_1784464963155.jpg',
-    caption: 'Joyful Moments Together',
-    uploaderName: 'Bridal Party',
-    deviceInfo: 'iPhone 14 Pro Max',
-    likes: 18,
-    uploadedAt: 'Recent'
-  },
-  {
-    id: 'photo-3',
-    url: '/src/assets/images/church_venue_1784464948619.jpg',
-    caption: 'St Austin’s Catholic Church',
-    uploaderName: 'Church Committee',
-    deviceInfo: 'iPhone 15',
-    likes: 15,
-    uploadedAt: 'Recent'
-  },
-  {
-    id: 'photo-4',
-    url: '/src/assets/images/reception_venue_1784475057575.jpg',
-    caption: 'St Mary’s Msongari Grounds',
-    uploaderName: 'Planning Committee',
-    deviceInfo: 'iPhone 15 Pro Max',
-    likes: 31,
-    uploadedAt: 'Recent'
-  }
-];
+export const INITIAL_GALLERY: GalleryPhoto[];
