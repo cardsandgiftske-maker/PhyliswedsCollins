@@ -293,9 +293,6 @@ export async function saveGalleryPhoto(photo: GalleryPhoto): Promise<void> {
       console.warn('Failed to save gallery photo to Firebase, saving locally:', error);
     }
   }
-  const existing = getLocalGallery();
-  const updated = [photo, ...existing.filter(p => p.id !== photo.id)];
-  saveLocalGallery(updated);
 }
 
 /**
@@ -311,9 +308,7 @@ export async function getGalleryPhotos(): Promise<GalleryPhoto[]> {
         photos.push(doc.data() as GalleryPhoto);
       });
       if (photos.length === 0) {
-        for (const item of INITIAL_GALLERY) {
-          await setDoc(doc(db, GALLERY_COLLECTION, item.id), item);
-          photos.push(item);
+        return[];
         }
       }
       return photos;
@@ -321,7 +316,7 @@ export async function getGalleryPhotos(): Promise<GalleryPhoto[]> {
       console.warn('Failed to fetch gallery from Firebase:', error);
     }
   }
-  return getLocalGallery();
+  return[];
 }
 
 /**
