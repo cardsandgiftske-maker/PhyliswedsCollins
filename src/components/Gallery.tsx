@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Camera, Upload, Heart, Smartphone, Sparkles, Plus, Image as ImageIcon, X, ChevronLeft, ChevronRight, Pause, Play, Maximize2 } from 'lucide-react';
+import { Camera, Upload, Heart, Smartphone, Sparkles, Plus, Image as ImageIcon, X, ChevronLeft, ChevronRight, Pause, Play, Maximize2, Download } from 'lucide-react';
 import { INITIAL_GALLERY } from '../data';
 import { GalleryPhoto } from '../types';
-import { saveGalleryPhoto, likeGalleryPhoto, subscribeToGalleryPhotos } from '../firebase';
+import { saveGalleryPhoto, likeGalleryPhoto, subscribeToGalleryPhotos } from '../lib/firebase';
 
 export default function Gallery() {
   const [photos, setPhotos] = useState<GalleryPhoto[]>(INITIAL_GALLERY);
@@ -42,7 +42,6 @@ export default function Gallery() {
     setCurrentIndex((prev) => (prev - 1 + photos.length) % photos.length);
   };
 
-  
   // Lightbox Next / Prev Handlers
   const handleLightboxNext = (e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
@@ -102,6 +101,7 @@ export default function Gallery() {
       document.body.removeChild(link);
     }
   };
+
   // Auto-play timer
   useEffect(() => {
     if (isAutoplay && !isHovered && !isModalOpen && !activePhoto && photos.length > 0) {
@@ -247,11 +247,12 @@ export default function Gallery() {
                     <div className="flex items-center gap-3">
                       <button
                         onClick={(e) => handleLike(e, currentPhoto.id)}
-                        className="flex items-center gap-1.5 bg-rose-600/90 hover:bg-rose-600 text-white px-4 py-2 rounded-full border border-rose-400/40 font-sans text-xs font-bold shadow-md cursor-pointer active:scale-90 transition-all"
+                        className="flex items-center gap-1.5 bg-rose-600/90 hover:bg-rose-600 text-white px-3.5 py-2 rounded-full border border-rose-400/40 font-sans text-xs font-bold shadow-md cursor-pointer active:scale-90 transition-all"
                       >
                         <Heart className="w-4 h-4 fill-white" />
-                        <span>{currentPhoto.likes || 1} Likes</span>
+                        <span>{currentPhoto.likes || 1}</span>
                       </button>
+
                       <button
                         onClick={(e) => handleDownloadPhoto(e, currentPhoto)}
                         className="p-2.5 bg-white/20 hover:bg-white/30 text-white rounded-full backdrop-blur-md cursor-pointer transition-all"
@@ -259,7 +260,7 @@ export default function Gallery() {
                       >
                         <Download className="w-4 h-4" />
                       </button>
-                      
+
                       <button
                         onClick={(e) => { e.stopPropagation(); setActivePhoto(currentPhoto); }}
                         className="p-2.5 bg-white/20 hover:bg-white/30 text-white rounded-full backdrop-blur-md cursor-pointer transition-all"
@@ -489,7 +490,6 @@ export default function Gallery() {
                 </button>
               </div>
             </div>
-            </div>
 
             {/* Left Scroll Navigation Button */}
             <button
@@ -517,7 +517,7 @@ export default function Gallery() {
               <div className="relative overflow-hidden rounded-2xl shadow-2xl border border-white/15 bg-stone-950 flex flex-col items-center max-w-full">
                 <AnimatePresence mode="wait">
                   <motion.img
-                       key={activePhoto.id}
+                    key={activePhoto.id}
                     initial={{ opacity: 0, scale: 0.96 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.96 }}
@@ -547,7 +547,7 @@ export default function Gallery() {
                       onClick={(e) => handleDownloadPhoto(e, activePhoto)}
                       className="flex items-center gap-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 px-3.5 py-1.5 rounded-full border border-amber-400/30 font-sans text-xs font-semibold cursor-pointer active:scale-90 transition-all"
                       title="Download Photo"
-                      >
+                    >
                       <Download className="w-3.5 h-3.5" />
                       <span>Download</span>
                     </button>
@@ -560,4 +560,5 @@ export default function Gallery() {
       </AnimatePresence>
     </section>
   );
+}
 
