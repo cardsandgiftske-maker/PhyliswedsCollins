@@ -108,13 +108,7 @@ export async function getRsvps(): Promise<RsvpGuest[]> {
       });
       
       // If Firestore database is brand new and completely empty, auto-seed it
-      if (rsvps.length === 0) {
-        const seed = getSeedData();
-        for (const item of seed) {
-          await setDoc(doc(db, COLLECTION_NAME, item.id), item);
-          rsvps.push(item);
-        }
-      }
+     
       return rsvps;
     } catch (error) {
       console.warn('Failed to fetch from Firebase, reading from localStorage instead:', error);
