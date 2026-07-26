@@ -17,12 +17,12 @@ import firebaseAppletConfig from '../../firebase-applet-config.json';
 
 // Read Firebase configuration from environment variables or firebase-applet-config.json
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || firebaseAppletConfig.apiKey,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || firebaseAppletConfig.authDomain,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || firebaseAppletConfig.projectId,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || firebaseAppletConfig.storageBucket,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || firebaseAppletConfig.messagingSenderId,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || firebaseAppletConfig.appId
+  apiKey: "AIzaSyCABtw3Z2QBaBKdjnJTp9VCTWUYgs9pt-A",
+  authDomain: "artful-climber-hgtt6.firebaseapp.com",
+  projectId: "artful-climber-hgtt6",
+  storageBucket: "artful-climber-hgtt6.firebasestorage.app",
+  messagingSenderId: "915772485910",
+  appId: "1:915772485910:web:5ae691bbb39162a17ee037"
 };
 
 const databaseId = firebaseAppletConfig.firestoreDatabaseId || undefined;
