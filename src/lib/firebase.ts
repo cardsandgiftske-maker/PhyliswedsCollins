@@ -67,40 +67,7 @@ const saveLocalRsvps = (rsvps: RsvpGuest[]) => {
   window.dispatchEvent(new Event('rsvp_database_updated'));
 };
 
-const getSeedData = (): RsvpGuest[] => {
-  return [
-    {
-      id: 'seed-1',
-      fullName: 'Christopher Mwangi',
-      phoneNumber: '+254 712 345 678',
-      willAttend: 'yes',
-      adultsCount: 2,
-      submittedAt: '2026-07-15T12:30:00.000Z',
-      eCardCode: 'CJ-26-X83A',
-      notes: 'Looking forward to delivering the vote of thanks!'
-    },
-    {
-      id: 'seed-2',
-      fullName: 'Mercy Wanjiku',
-      phoneNumber: '+254 722 987 654',
-      willAttend: 'yes',
-      adultsCount: 1,
-      submittedAt: '2026-07-16T09:15:00.000Z',
-      eCardCode: 'CJ-26-K92B',
-      notes: 'Gluten-free / vegetarian dietary preference please.'
-    },
-    {
-      id: 'seed-3',
-      fullName: 'David Omondi',
-      phoneNumber: '+254 733 444 555',
-      willAttend: 'no',
-      adultsCount: 0,
-      submittedAt: '2026-07-18T16:45:00.000Z',
-      eCardCode: 'CJ-26-R15C',
-      notes: 'Sending love! Traveling out of the country on that weekend.'
-    }
-  ];
-};
+
 
 // EXPORTED CORE API FUNCTIONS (SFC / transparent dual database logic)
 
