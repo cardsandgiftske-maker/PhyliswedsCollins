@@ -59,7 +59,7 @@ export default function RsvpForm() {
         willAttend,
         adultsCount: willAttend === 'yes' ? adultsCount : 0,
         submittedAt: new Date().toISOString(),
-        notes: notes.trim() || undefined,
+        notes: notes.trim(),
       };
 
       await saveRsvp(newGuest);
