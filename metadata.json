@@ -1,6 +1,0 @@
-{
-  "name": "Phylis & Collins Wedding Invitation",
-  "description": "Official wedding invitation, program, RSVP, and guest photo gallery for Phylis Nanyama Sifuna & Collins Kimenye Mativo (#PhilCollins).",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
