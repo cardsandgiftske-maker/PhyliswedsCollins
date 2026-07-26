@@ -19,8 +19,8 @@ export async function uploadToCloudinary(
   uploadPreset?: string
 ): Promise<string> {
   // Read configured Cloudinary credentials from params or environment variables
-  const activeCloudName = (cloudName?.trim() || import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'dphc0jlnr').trim();
-  const activePreset = (uploadPreset?.trim() || import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'wedding_photos').trim();
+  const activeCloudName = (cloudName?.trim() || import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'b6onpcyk').trim();
+  const activePreset = (uploadPreset?.trim() || import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'philcollins-weddinggallery').trim();
 
   const formData = new FormData();
   formData.append('file', fileOrDataUrl);
