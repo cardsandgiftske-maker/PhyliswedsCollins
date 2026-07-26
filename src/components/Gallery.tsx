@@ -22,8 +22,8 @@ export default function Gallery() {
   const [activePhoto, setActivePhoto] = useState<GalleryPhoto | null>(null);
 
   // Cloudinary credentials (defaults to env or user custom preset)
-  const [cloudName, setCloudName] = useState(import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'dphc0jlnr');
-  const [uploadPreset, setUploadPreset] = useState(import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'wedding_photos');
+  const [cloudName, setCloudName] = useState(import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'b6onpcyk');
+  const [uploadPreset, setUploadPreset] = useState(import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'philcollins-weddinggallery');
   const [showCloudSettings, setShowCloudSettings] = useState(false);
 
   const autoplayRef = useRef<NodeJS.Timeout | null>(null);
