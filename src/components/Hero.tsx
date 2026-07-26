@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { Heart, Calendar, MapPin, Clock, Sparkles } from 'lucide-react';
 import { WEDDING_DATE, WEDDING_DETAILS } from '../data';
 import Crest from './Crest';
+import heroImage from "../assets/images/carol_and_john_portrait_1784461506194.jpg";
 
 interface TimeLeft {
   days: number;
@@ -51,11 +52,10 @@ export default function Hero() {
       {/* Background Image with Theme Color Wash Overlays */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <img
-          src="/src/assets/images/carol_and_john_portrait_1784461506194.jpg"
-          alt="Phylis and Collins Portrait"
-          className="w-full h-full object-cover object-center opacity-[0.16] scale-105 filter brightness-[1.02] contrast-[0.98]"
-          referrerPolicy="no-referrer"
-        />
+  src={heroImage}
+  alt="Phylis and Collins Wedding Portrait"
+  className="w-full h-full object-cover object-center opacity-[0.22] scale-105 filter brightness-[1.03] contrast-[0.98]"
+/>
         {/* Subtle theme color ambient glows */}
         <div className="absolute top-0 -left-20 w-96 h-96 bg-[#8B1E3F]/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-10 -right-20 w-96 h-96 bg-[#002147]/10 rounded-full blur-3xl pointer-events-none" />
