@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Clock, CheckCircle, Award, Compass, Music, MessageCircle, Gift, Cake, LogOut } from 'lucide-react';
+import { Clock, CheckCircle, Award, Compass, Music, MessageCircle, Gift, Cake, LogOut, Camera, Users } from 'lucide-react';
 import { PROGRAM_ITEMS } from '../data';
 
 export default function Program() {
@@ -15,15 +15,15 @@ export default function Program() {
   const getIconForTitle = (title: string, isChurch: boolean) => {
     const t = title.toLowerCase();
     const colorClass = isChurch ? 'text-maroon-700' : 'text-emerald-700';
-    if (t.includes('matrimony') || t.includes('mass') || t.includes('church')) return <Award className={`w-5 h-5 ${colorClass}`} />;
-    if (t.includes('photo') || t.includes('shoot')) return <Compass className={`w-5 h-5 ${colorClass}`} />;
-    if (t.includes('arrival')) return <Clock className={`w-5 h-5 ${colorClass}`} />;
-    if (t.includes('welcome') || t.includes('lunch') || t.includes('feast')) return <CheckCircle className={`w-5 h-5 ${colorClass}`} />;
+    if (t.includes('arrival') || t.includes('ushering')) return <Clock className={`w-5 h-5 ${colorClass}`} />;
+    if (t.includes('matrimony') || t.includes('mass') || t.includes('church ceremony')) return <Award className={`w-5 h-5 ${colorClass}`} />;
+    if (t.includes('photo') || t.includes('shoot') || t.includes('arboretum')) return <Camera className={`w-5 h-5 ${colorClass}`} />;
+    if (t.includes('cocktail') || t.includes('welcome') || t.includes('lunch') || t.includes('feast')) return <CheckCircle className={`w-5 h-5 ${colorClass}`} />;
     if (t.includes('entrance') || t.includes('dancing')) return <Music className={`w-5 h-5 ${colorClass}`} />;
-    if (t.includes('speech') || t.includes('presentation')) return <MessageCircle className={`w-5 h-5 ${colorClass}`} />;
+    if (t.includes('speech') || t.includes('tribute') || t.includes('presentation')) return <MessageCircle className={`w-5 h-5 ${colorClass}`} />;
     if (t.includes('cake')) return <Cake className={`w-5 h-5 ${colorClass}`} />;
-    if (t.includes('thanks') || t.includes('bouquet') || t.includes('vote')) return <Gift className={`w-5 h-5 ${colorClass}`} />;
-    return <LogOut className={`w-5 h-5 ${colorClass}`} />;
+    if (t.includes('gift') || t.includes('thanks') || t.includes('bouquet') || t.includes('vote')) return <Gift className={`w-5 h-5 ${colorClass}`} />;
+    return <Users className={`w-5 h-5 ${colorClass}`} />;
   };
 
   return (
@@ -127,6 +127,13 @@ export default function Program() {
                   <span className="text-stone-400 font-normal">|</span>
                   <span className="text-stone-500 font-normal text-[11px]">{item.duration}</span>
                 </div>
+
+                {/* Description */}
+                {item.description && (
+                  <p className="text-stone-600 font-serif text-sm md:text-base mt-3 leading-relaxed">
+                    {item.description}
+                  </p>
+                )}
               </div>
             </motion.div>
           ))}
