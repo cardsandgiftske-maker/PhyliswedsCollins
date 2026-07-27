@@ -217,7 +217,7 @@ export default function Gallery() {
                 Snap &amp; Share Your Photos
               </h3>
               <p className="text-stone-300 text-xs sm:text-sm font-sans mt-1">
-                Side Note: <span className="text-amber-200 font-bold">Latest iPhone photos preferred! 📱✨</span> High quality portrait &amp; action shots welcomed.
+                Side Note: <span className="text-amber-200 font-bold">Latest iPhone & Samsung phones photos preferred! 📱✨</span> High quality portrait &amp; action shots welcomed.
               </p>
             </div>
           </div>
