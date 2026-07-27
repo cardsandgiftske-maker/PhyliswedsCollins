@@ -61,64 +61,55 @@ export const PROGRAM_ITEMS: ProgramItem[] = [
     time: '9:30 AM - 10:15 AM',
     duration: '45 mins',
     title: 'Arrival & Ushering of Guests',
-    description: 'Guests arrive at St Austin’s Catholic Church, Rhapta Rd, Westlands, and are ushered into the sanctuary.',
-    isChurch: true,
+    
   },
   {
     time: '10:30 AM - 12:00 PM',
     duration: '1 hr 30 mins',
     title: 'Holy Matrimony Nuptial Mass',
-    description: 'The Sacrament of Holy Matrimony at St Austin’s Catholic Church, commencing promptly at 10:30 AM.',
-    isChurch: true,
+    
   },
   {
     time: '12:00 PM - 12:45 PM',
     duration: '45 mins',
     title: 'Church Photo Session',
-    description: 'Photo session with family, clergy, and guests at St Austin’s Catholic Church grounds following the Mass.',
-    isChurch: true,
+    
   },
   {
     time: '12:45 PM - 2:00 PM',
     duration: '1 hr 15 mins',
-    title: 'Arboretum Shoot & Guest Cocktail Hour',
-    description: 'Bridal party proceeds to Nairobi Arboretum for photography, while guests transition to St Mary’s Msongari for welcome cocktails and refreshments as they await the grand entrance once the bridal party returns.',
-    isChurch: false,
+    title: 'Bridal Party Photoshoot & Guest Cocktail Hour',
+    
   },
   {
     time: '2:00 PM - 3:15 PM',
     duration: '1 hr 15 mins',
     title: 'Grand Entrance & Festive Feast',
-    description: 'Grand entrance of the bridal team and newly married couple Phylis & Collins upon return from the Arboretum, followed by opening prayers and lunch service.',
-    isChurch: false,
+    
   },
   {
     time: '3:15 PM - 4:15 PM',
     duration: '1 hour',
     title: 'Speeches, Tributes & Family Blessings',
-    description: 'Heartfelt speeches and wisdom from parents, family elders, church representatives, and friends.',
-    isChurch: false,
+   
   },
   {
     time: '4:15 PM - 5:00 PM',
     duration: '45 mins',
     title: 'Cake Cutting & Toast',
-    description: 'Cutting of the wedding cake, champagne toast, and serving parents, best couple, and guests.',
-    isChurch: false,
+    
   },
   {
     time: '5:00 PM - 5:45 PM',
     duration: '45 mins',
     title: 'Gift Presentation & Bouquet Toss',
-    description: 'Gifting session, bouquet toss, and vote of thanks.',
-    isChurch: false,
+   
   },
   {
     time: '5:45 PM onwards',
     duration: 'Evening',
     title: 'Dancing & Celebration',
-    description: 'Put your dancing shoes on! High-energy music, celebration, and evening fellowship with #PhilCollins.',
-    isChurch: false,
+    
   },
 ];
 
