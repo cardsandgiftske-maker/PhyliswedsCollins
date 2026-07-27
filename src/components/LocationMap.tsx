@@ -49,8 +49,8 @@ export default function LocationMap() {
               <Clock className="w-5 h-5" />
             </div>
             <p className="text-xs text-amber-200/80 uppercase tracking-widest font-sans font-semibold mb-1">The Time</p>
-            <p className="text-sm text-stone-200 font-serif font-medium">10:00 a.m. Prompt</p>
-            <p className="text-xs text-amber-300 font-sans mt-1 font-medium">Nuptial Mass</p>
+            <p className="text-sm text-stone-200 font-serif font-medium">10:30 a.m. Mass</p>
+            <p className="text-xs text-amber-300 font-sans mt-1 font-medium">Guest Arrival 9:30 a.m.</p>
           </div>
 
           {/* Venue Card */}
@@ -139,7 +139,7 @@ export default function LocationMap() {
                     <div>
                       <p className="text-xs text-stone-400 uppercase tracking-widest font-sans font-bold">Timeline</p>
                       <p className="text-sm text-stone-200 mt-0.5">
-                        {activeVenue === 'ceremony' ? '10:00 a.m. - 12:00 p.m. Prompt' : '1:00 p.m. - 5:15 p.m. and onwards'}
+                        {activeVenue === 'ceremony' ? '9:30 a.m. Arrival | 10:30 a.m. Mass' : '12:45 p.m. Cocktail | 2:00 p.m. Grand Entrance'}
                       </p>
                     </div>
                   </div>
