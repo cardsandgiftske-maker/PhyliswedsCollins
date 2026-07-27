@@ -92,12 +92,12 @@ export default function Hero() {
         >
           <p className="italic">
             With grateful hearts, our families' blessings, and after years of hearing <span className="font-semibold text-stone-800">"So, when is the wedding?"</span>,
-          </p>
-          <p className="text-xs sm:text-sm text-stone-700 font-serif mt-2 font-medium">
+           </p>
+          <p className="text-base sm:text-lg md:text-xl text-stone-900 font-serif mt-2.5 font-bold tracking-wide">
             {WEDDING_DETAILS.families.brideFamily}
           </p>
-          <p className="text-xs text-[#D4AF37] font-serif italic my-0.5 font-bold">&amp;</p>
-          <p className="text-xs sm:text-sm text-stone-700 font-serif font-medium">
+          <p className="text-sm sm:text-base text-[#D4AF37] font-serif italic my-1 font-bold">&amp;</p>
+          <p className="text-base sm:text-lg md:text-xl text-stone-900 font-serif font-bold tracking-wide">
             {WEDDING_DETAILS.families.groomFamily}
           </p>
           <p className="italic text-stone-600 text-xs sm:text-sm mt-2">
