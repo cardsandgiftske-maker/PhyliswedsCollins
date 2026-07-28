@@ -28,8 +28,8 @@ async function startServer() {
       const recipient = emailAddress || guest.email;
       const baseUrl = process.env.APP_URL || `http://localhost:${PORT}`;
 
-      // Generate HTML email content
-      const htmlContent = generateRsvpEmailHtml(guest, baseUrl);
+      // Generate HTML email content with Cloudinary uploaded image assets
+      const htmlContent = await generateRsvpEmailHtml(guest, baseUrl);
 
       let emailSent = false;
       let emailError: string | null = null;
