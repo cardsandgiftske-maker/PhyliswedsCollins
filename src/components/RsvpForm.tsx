@@ -1,19 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Mail, CheckCircle2, AlertCircle, Sparkles, User, Phone, Check, Heart } from 'lucide-react';
+import { Mail, CheckCircle2, AlertCircle, Sparkles, User, Phone, Check, Heart, QrCode, Ticket } from 'lucide-react';
 import { RsvpGuest } from '../types';
 import { WEDDING_DETAILS } from '../data';
 import { saveRsvp, isFirebaseConfigured } from '../lib/firebase';
+import RsvpPassModal from './RsvpPassModal';
 
 export default function RsvpForm() {
   const [fullName, setFullName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [email, setEmail] = useState('');
   const [willAttend, setWillAttend] = useState<'yes' | 'no'>('yes');
   const [adultsCount, setAdultsCount] = useState(1);
   const [notes, setNotes] = useState('');
   
   const [loading, setLoading] = useState(false);
   const [submittedGuest, setSubmittedGuest] = useState<RsvpGuest | null>(null);
+  const [showPassModal, setShowPassModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   // Floating button state
@@ -56,19 +59,38 @@ export default function RsvpForm() {
         id: 'rsvp-' + Date.now(),
         fullName: fullName.trim(),
         phoneNumber: phoneNumber.trim(),
+        email: email.trim() || undefined,
         willAttend,
         adultsCount: willAttend === 'yes' ? adultsCount : 0,
         submittedAt: new Date().toISOString(),
-        notes: notes.trim(),
+        notes: notes.trim() || undefined,
       };
 
       await saveRsvp(newGuest);
 
+      // Attempt sending confirmation email if email is provided
+      if (email.trim()) {
+        try {
+          await fetch('/api/send-rsvp-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              guest: newGuest,
+              emailAddress: email.trim(),
+            }),
+          });
+        } catch (e) {
+          console.warn('Could not post to /api/send-rsvp-email:', e);
+        }
+      }
+
       setSubmittedGuest(newGuest);
+      setShowPassModal(true);
       setLoading(false);
 
       setFullName('');
       setPhoneNumber('');
+      setEmail('');
       setWillAttend('yes');
       setAdultsCount(1);
       setNotes('');
@@ -152,6 +174,21 @@ export default function RsvpForm() {
                     placeholder="e.g. 0711910037"
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
+                    className="w-full bg-stone-50/50 border border-stone-200 focus:border-maroon-700 focus:ring-1 focus:ring-maroon-700/20 rounded-xl px-4 py-3 text-sm text-stone-800 outline-none transition-all"
+                  />
+                </div>
+
+                {/* Email Address input for Digital Pass */}
+                <div className="space-y-1.5">
+                  <label className="text-xs uppercase tracking-widest text-stone-500 font-sans font-bold flex items-center gap-1">
+                    <Mail className="w-3.5 h-3.5 text-stone-400" />
+                    <span>Email Address (for Digital Pass)</span>
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="e.g. guest@example.com (optional)"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="w-full bg-stone-50/50 border border-stone-200 focus:border-maroon-700 focus:ring-1 focus:ring-maroon-700/20 rounded-xl px-4 py-3 text-sm text-stone-800 outline-none transition-all"
                   />
                 </div>
@@ -261,6 +298,14 @@ export default function RsvpForm() {
                           {submittedGuest.willAttend === 'yes' ? 'Attending with pleasure' : 'Regretfully decline'}
                         </p>
                       </div>
+
+                      <button
+                        onClick={() => setShowPassModal(true)}
+                        className="w-full py-3 px-4 bg-maroon-800 hover:bg-maroon-900 text-white font-sans font-bold text-xs uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm active:scale-95"
+                      >
+                        <Ticket className="w-4 h-4 text-amber-300" />
+                        <span>View Official Wedding Pass</span>
+                      </button>
 
                       {submittedGuest.notes && (
                         <div className="bg-stone-50 border border-stone-200/80 rounded-xl p-4 text-center italic font-serif text-xs text-stone-700">
@@ -373,6 +418,16 @@ export default function RsvpForm() {
               <span>Confirm Attendance</span>
             </button>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Official Wedding Email Pass Modal */}
+      <AnimatePresence>
+        {showPassModal && submittedGuest && (
+          <RsvpPassModal 
+            guest={submittedGuest} 
+            onClose={() => setShowPassModal(false)} 
+          />
         )}
       </AnimatePresence>
     </>
