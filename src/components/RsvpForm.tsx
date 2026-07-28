@@ -182,7 +182,7 @@ export default function RsvpForm() {
                 <div className="space-y-1.5">
                   <label className="text-xs uppercase tracking-widest text-stone-500 font-sans font-bold flex items-center gap-1">
                     <Mail className="w-3.5 h-3.5 text-stone-400" />
-                    <span>Email Address (for Automatic Confirmation & Pass)</span>
+                    <span>Email Address (for Digital Pass)</span>
                   </label>
                   <input
                     type="email"
@@ -298,13 +298,6 @@ export default function RsvpForm() {
                           {submittedGuest.willAttend === 'yes' ? 'Attending with pleasure' : 'Regretfully decline'}
                         </p>
                       </div>
-
-                      {submittedGuest.email && (
-                        <div className="bg-emerald-50 border border-emerald-200/80 rounded-xl p-3 text-center text-xs text-emerald-800 flex items-center justify-center gap-1.5 font-medium">
-                          <Mail className="w-3.5 h-3.5 shrink-0 text-emerald-700" />
-                          <span>Pass sent automatically to <strong className="font-semibold">{submittedGuest.email}</strong></span>
-                        </div>
-                      )}
 
                       <button
                         onClick={() => setShowPassModal(true)}
