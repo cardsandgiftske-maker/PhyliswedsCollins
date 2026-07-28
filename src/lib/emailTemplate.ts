@@ -1,11 +1,70 @@
+import fs from 'fs';
+import path from 'path';
 import { RsvpGuest } from '../types';
+import { uploadToCloudinary } from './cloudinary';
 
-export function generateRsvpEmailHtml(guest: RsvpGuest, baseUrl: string = 'https://phylisandcollins.wedding'): string {
-  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
+let cachedCloudinaryCouplePhotoUrl: string | null = null;
+
+async function getCloudinaryCouplePhotoUrl(baseUrl: string): Promise<string> {
+  if (cachedCloudinaryCouplePhotoUrl) {
+    return cachedCloudinaryCouplePhotoUrl;
+  }
+
+  const fallbackUrl = `${baseUrl.replace(/\/$/, '')}/src/assets/images/carol_and_john_portrait_1784461506194.jpg`;
+
+  try {
+    let dataUrl: string | null = null;
+    const localPath = path.join(process.cwd(), 'src/assets/images/carol_and_john_portrait_1784461506194.jpg');
+
+    if (fs.existsSync(localPath)) {
+      const fileBuffer = fs.readFileSync(localPath);
+      dataUrl = `data:image/jpeg;base64,${fileBuffer.toString('base64')}`;
+    }
+
+    if (dataUrl) {
+      const uploadedUrl = await uploadToCloudinary(dataUrl);
+      if (uploadedUrl) {
+        cachedCloudinaryCouplePhotoUrl = uploadedUrl;
+        console.log('Successfully uploaded header couple photo to Cloudinary:', uploadedUrl);
+        return uploadedUrl;
+      }
+    }
+  } catch (err) {
+    console.warn('Could not upload header couple photo to Cloudinary, using fallback:', err);
+  }
+
+  return fallbackUrl;
+}
+
+async function getCloudinaryQrCodeUrl(guest: RsvpGuest): Promise<string> {
+  const rawQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
     `PHYLIS-COLLINS-RSVP-${guest.id}-${guest.fullName}`
   )}&color=5a1d22&bgcolor=FCFAF7`;
 
-  const couplePhotoUrl = `${baseUrl.replace(/\/$/, '')}/src/assets/images/carol_and_john_portrait_1784461506194.jpg`;
+  try {
+    const response = await fetch(rawQrUrl);
+    if (response.ok) {
+      const arrayBuffer = await response.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      const mimeType = response.headers.get('content-type') || 'image/png';
+      const qrDataUrl = `data:${mimeType};base64,${buffer.toString('base64')}`;
+
+      const uploadedUrl = await uploadToCloudinary(qrDataUrl);
+      if (uploadedUrl) {
+        console.log(`Successfully uploaded guest (${guest.fullName}) QR code to Cloudinary:`, uploadedUrl);
+        return uploadedUrl;
+      }
+    }
+  } catch (err) {
+    console.warn('Could not upload QR code to Cloudinary, falling back to raw QR URL:', err);
+  }
+
+  return rawQrUrl;
+}
+
+export async function generateRsvpEmailHtml(guest: RsvpGuest, baseUrl: string = 'https://phylisandcollins.wedding'): Promise<string> {
+  const qrCodeUrl = await getCloudinaryQrCodeUrl(guest);
+  const couplePhotoUrl = await getCloudinaryCouplePhotoUrl(baseUrl);
   
   const googleMapsUrl = 'https://www.google.com/maps/search/?api=1&query=-1.2618,36.7905';
   
