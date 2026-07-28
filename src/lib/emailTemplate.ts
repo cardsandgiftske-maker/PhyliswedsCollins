@@ -251,7 +251,7 @@ export async function generateRsvpEmailHtml(guest: RsvpGuest, baseUrl: string = 
             </td>
           </tr>
 
-          <!-- Footer & Whitelist Tip -->
+          <!-- Footer -->
           <tr>
             <td align="center" style="padding: 20px; background-color: #33070b; color: #eacacc; text-align: center;">
               <p style="margin: 0; font-family: Georgia, serif; font-size: 16px; font-weight: bold; color: #D4AF37;">
@@ -260,12 +260,6 @@ export async function generateRsvpEmailHtml(guest: RsvpGuest, baseUrl: string = 
               <p style="margin: 5px 0 0 0; font-family: sans-serif; font-size: 11px; color: #dbabae;">
                 #PhilCollins2026 • We look forward to celebrating with you!
               </p>
-
-              <!-- Whitelist / Inbox Tip -->
-              <div style="margin-top: 15px; padding: 12px; background-color: rgba(255, 255, 255, 0.08); border-radius: 8px; font-family: sans-serif; font-size: 11px; color: #f2d8da; text-align: left; line-height: 1.4;">
-                <strong style="color: #ffffff;">💡 Guarantee Delivery to your Primary Inbox:</strong><br/>
-                To ensure future wedding updates and reminders arrive in your <strong>Primary Inbox</strong> (and not Spam or Promotions), please reply to this email or add <code>cardsandgiftske@gmail.com</code> to your contacts list. If using Gmail, drag this email to your <strong>Primary</strong> tab.
-              </div>
             </td>
           </tr>
 
@@ -277,42 +271,3 @@ export async function generateRsvpEmailHtml(guest: RsvpGuest, baseUrl: string = 
 </html>
   `;
 }
-
-export function generateRsvpEmailText(guest: RsvpGuest, baseUrl: string = 'https://phylisandcollins.wedding'): string {
-  return `
-✨ OFFICIAL WEDDING RSVP CONFIRMATION & E-PASS
-
-Dear ${guest.fullName},
-
-We are thrilled to confirm your RSVP for the Holy Matrimony & Reception of Phylis & Collins!
-
-GUEST PASS DETAILS:
-• Guest Name: ${guest.fullName}
-• Pass ID: ${guest.id.toUpperCase()}
-• Attendance Status: ${guest.willAttend === 'yes' ? 'ATTENDING' : 'REGRETS'}
-• Total Allocated Seats: ${guest.adultsCount || 1}
-• Notes: ${guest.notes || 'None specified'}
-
-WEDDING DETAILS:
-📅 Date: Saturday, August 22, 2026
-
-⛪ CHURCH NUPTIAL MASS:
-• Venue: St Austin’s Catholic Church, Rhapta Rd, Westlands, Nairobi
-• Schedule: 9:30 AM Guest Arrival | 10:30 AM Holy Mass
-
-🥂 RECEPTION CELEBRATION:
-• Venue: St Mary's Msongari Rugby Pitch, Westlands, Nairobi
-• Schedule: 12:45 PM Guest Cocktails | 2:00 PM Grand Entrance
-
-MAPS & CALENDAR:
-• Google Maps: https://www.google.com/maps/search/?api=1&query=-1.2618,36.7905
-• Wedding Minisite: ${baseUrl}
-
-WHITELISTING TIP:
-To ensure future wedding reminders arrive in your Primary Inbox, please add cardsandgiftske@gmail.com to your address book or contacts.
-
-Warm regards,
-Phylis & Collins (#PhilCollins2026)
-`;
-}
-
