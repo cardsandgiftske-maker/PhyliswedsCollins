@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Shield, Key, Search, Trash2, Download, RefreshCw, X, Eye, EyeOff, Users, CheckCircle, XCircle, FileSpreadsheet, CloudLightning } from 'lucide-react';
+import { Shield, Key, Search, Trash2, Download, RefreshCw, X, Eye, EyeOff, Users, CheckCircle, XCircle, FileSpreadsheet, CloudLightning, Ticket } from 'lucide-react';
 import { RsvpGuest } from '../types';
 import { deleteRsvp, updateRsvpStatus, subscribeToRsvps, isFirebaseConfigured, getRsvps } from '../lib/firebase';
+import RsvpPassModal from './RsvpPassModal';
 
 export default function AdminPanel() {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,6 +14,7 @@ export default function AdminPanel() {
   const [searchQuery, setSearchQuery] = useState('');
   const [attendanceFilter, setAttendanceFilter] = useState<'all' | 'yes' | 'no'>('all');
   const [passcodeError, setPasscodeError] = useState('');
+  const [selectedGuestForPass, setSelectedGuestForPass] = useState<RsvpGuest | null>(null);
 
   // Subscribe to real-time updates from Firebase (with local sandbox fallback)
   useEffect(() => {
@@ -379,7 +381,15 @@ export default function AdminPanel() {
                               <td className="p-4 text-stone-500 italic max-w-xs truncate" title={guest.notes}>
                                 {guest.notes || <span className="text-stone-300">None</span>}
                               </td>
-                              <td className="p-4 text-right">
+                              <td className="p-4 text-right flex items-center justify-end gap-1.5">
+                                <button
+                                  onClick={() => setSelectedGuestForPass(guest)}
+                                  className="p-2 bg-white hover:bg-maroon-50 text-maroon-800 border border-stone-200 hover:border-maroon-300 rounded-lg transition-all cursor-pointer flex items-center gap-1 font-sans text-[11px] font-bold"
+                                  title="View Guest Pass"
+                                >
+                                  <Ticket className="w-3.5 h-3.5 text-maroon-800" />
+                                  <span className="hidden sm:inline">Pass</span>
+                                </button>
                                 <button
                                   onClick={() => handleDelete(guest.id)}
                                   className="p-2 bg-white hover:bg-maroon-50 text-stone-400 hover:text-maroon-700 border border-stone-200 hover:border-maroon-300 rounded-lg transition-all cursor-pointer"
@@ -403,6 +413,16 @@ export default function AdminPanel() {
               )}
             </div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Guest Pass Preview Modal */}
+      <AnimatePresence>
+        {selectedGuestForPass && (
+          <RsvpPassModal 
+            guest={selectedGuestForPass} 
+            onClose={() => setSelectedGuestForPass(null)} 
+          />
         )}
       </AnimatePresence>
     </>
