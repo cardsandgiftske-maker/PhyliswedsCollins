@@ -1,4 +1,6 @@
 import { RsvpGuest } from '../types';
+const couplePhotoUrl =
+"https://res.cloudinary.com/b6onpcyk/image/upload/v1785263597/carol_and_john_portrait_1784461506194_j2lhcj.jpg"
 
 let cachedCloudinaryCouplePhotoUrl: string | null = null;
 
