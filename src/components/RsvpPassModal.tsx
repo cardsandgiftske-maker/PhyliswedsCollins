@@ -6,13 +6,9 @@ import {
   MapPin, 
   Calendar, 
   Clock, 
-  Send, 
   Printer, 
   Sparkles, 
-  ExternalLink, 
-  CheckCircle2, 
-  Mail, 
-  Download,
+  ExternalLink,
   Image as ImageIcon
 } from 'lucide-react';
 import { RsvpGuest } from '../types';
@@ -104,11 +100,7 @@ function replaceOklabAndOklch(cssText: string): string {
 }
 
 export default function RsvpPassModal({ guest, onClose }: RsvpPassModalProps) {
-  const [userEmail, setUserEmail] = useState(guest.email || '');
-  const [sendingEmail, setSendingEmail] = useState(false);
   const [downloadingImage, setDownloadingImage] = useState(false);
-  const [emailStatus, setEmailStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
-
   const cardRef = useRef<HTMLDivElement>(null);
 
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(
@@ -160,44 +152,6 @@ export default function RsvpPassModal({ guest, onClose }: RsvpPassModalProps) {
       console.error('Error generating e-card image:', err);
     } finally {
       setDownloadingImage(false);
-    }
-  };
-
-  const handleSendEmail = async () => {
-    if (!userEmail || !userEmail.includes('@')) {
-      setEmailStatus({ type: 'error', message: 'Please enter a valid email address.' });
-      return;
-    }
-
-    setSendingEmail(true);
-    setEmailStatus(null);
-
-    try {
-      const response = await fetch('/api/send-rsvp-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          guest: { ...guest, email: userEmail },
-          emailAddress: userEmail,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setEmailStatus({
-          type: 'success',
-          message: data.emailSent
-            ? `Confirmation email delivered directly to ${userEmail}!`
-            : `Digital Pass confirmed for ${userEmail}!`,
-        });
-      } else {
-        setEmailStatus({ type: 'error', message: data.error || 'Failed to send email.' });
-      }
-    } catch (err) {
-      setEmailStatus({ type: 'success', message: `RSVP Pass ready and confirmed for ${userEmail}!` });
-    } finally {
-      setSendingEmail(false);
     }
   };
 
@@ -369,49 +323,6 @@ export default function RsvpPassModal({ guest, onClose }: RsvpPassModalProps) {
                 <span>Return to Minisite</span>
               </button>
             </div>
-          </div>
-
-          {/* Send Email Section */}
-          <div className="bg-amber-50/60 border border-amber-200/80 rounded-2xl p-4 space-y-3 print:hidden">
-            <div className="flex items-center gap-2">
-              <Mail className="w-4 h-4 text-maroon-800" />
-              <p className="text-xs font-bold font-sans uppercase tracking-wider text-stone-800">
-                Receive Pass via Email
-              </p>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-2">
-              <input
-                type="email"
-                placeholder="Enter your email address..."
-                value={userEmail}
-                onChange={(e) => setUserEmail(e.target.value)}
-                className="flex-1 bg-white border border-stone-200 focus:border-maroon-700 rounded-xl px-3.5 py-2.5 text-xs text-stone-800 outline-none"
-              />
-              <button
-                onClick={handleSendEmail}
-                disabled={sendingEmail}
-                className="py-2.5 px-4 bg-maroon-800 hover:bg-maroon-900 disabled:opacity-50 text-white font-sans font-bold text-xs uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shrink-0"
-              >
-                {sendingEmail ? (
-                  <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <>
-                    <Send className="w-3.5 h-3.5" />
-                    <span>Send Email Pass</span>
-                  </>
-                )}
-              </button>
-            </div>
-
-            {emailStatus && (
-              <p className={`text-xs font-medium flex items-center gap-1.5 ${
-                emailStatus.type === 'success' ? 'text-emerald-700' : 'text-rose-600'
-              }`}>
-                <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
-                <span>{emailStatus.message}</span>
-              </p>
-            )}
           </div>
 
           {/* Print Button Footer */}
