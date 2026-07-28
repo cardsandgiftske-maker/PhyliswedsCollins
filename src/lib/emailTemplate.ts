@@ -1,34 +1,12 @@
-import fs from 'fs';
-import path from 'path';
 import { RsvpGuest } from '../types';
-import { uploadToCloudinary } from './cloudinary';
 
 let cachedCloudinaryCouplePhotoUrl: string | null = null;
-
-async function getCloudinaryCouplePhotoUrl(baseUrl: string): Promise<string> {
-  if (cachedCloudinaryCouplePhotoUrl) {
-    return cachedCloudinaryCouplePhotoUrl;
-  }
 
   const fallbackUrl = `${baseUrl.replace(/\/$/, '')}/src/assets/images/carol_and_john_portrait_1784461506194.jpg`;
 
   try {
     let dataUrl: string | null = null;
     const localPath = path.join(process.cwd(), 'src/assets/images/carol_and_john_portrait_1784461506194.jpg');
-
-    if (fs.existsSync(localPath)) {
-      const fileBuffer = fs.readFileSync(localPath);
-      dataUrl = `data:image/jpeg;base64,${fileBuffer.toString('base64')}`;
-    }
-
-    if (dataUrl) {
-      const uploadedUrl = await uploadToCloudinary(dataUrl);
-      if (uploadedUrl) {
-        cachedCloudinaryCouplePhotoUrl = uploadedUrl;
-        console.log('Successfully uploaded header couple photo to Cloudinary:', uploadedUrl);
-        return uploadedUrl;
-      }
-    }
   } catch (err) {
     console.warn('Could not upload header couple photo to Cloudinary, using fallback:', err);
   }
