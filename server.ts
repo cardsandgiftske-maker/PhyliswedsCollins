@@ -3,7 +3,7 @@ import path from 'path';
 import { createServer as createViteServer } from 'vite';
 import nodemailer from 'nodemailer';
 import { Resend } from 'resend';
-import { generateRsvpEmailHtml, generateRsvpEmailText } from './src/lib/emailTemplate';
+import { generateRsvpEmailHtml } from './src/lib/emailTemplate';
 
 async function startServer() {
   const app = express();
@@ -28,10 +28,8 @@ async function startServer() {
       const recipient = emailAddress || guest.email;
       const baseUrl = process.env.APP_URL || `http://localhost:${PORT}`;
 
-      // Generate HTML email content and Plain Text fallback with Cloudinary uploaded assets
+      // Generate HTML email content with Cloudinary uploaded image assets
       const htmlContent = await generateRsvpEmailHtml(guest, baseUrl);
-      const textContent = generateRsvpEmailText(guest, baseUrl);
-      const replyToEmail = process.env.REPLY_TO_EMAIL || 'cardsandgiftske@gmail.com';
 
       let emailSent = false;
       let emailError: string | null = null;
@@ -52,14 +50,8 @@ async function startServer() {
           const { data, error } = await resend.emails.send({
             from: fromEmail,
             to: [recipient],
-            replyTo: replyToEmail,
             subject: `✨ Official RSVP Confirmation & Wedding Pass for ${guest.fullName}`,
             html: htmlContent,
-            text: textContent,
-            headers: {
-              'X-Entity-Ref-ID': guest.id,
-              'List-Unsubscribe': `<mailto:${replyToEmail}?subject=Unsubscribe>`,
-            },
           });
 
           if (error) {
@@ -91,14 +83,8 @@ async function startServer() {
           await transporter.sendMail({
             from: process.env.SMTP_FROM || `"Phylis & Collins Wedding" <${smtpUser}>`,
             to: recipient,
-            replyTo: replyToEmail,
             subject: `✨ Official RSVP Confirmation & Wedding Pass for ${guest.fullName}`,
             html: htmlContent,
-            text: textContent,
-            headers: {
-              'X-Entity-Ref-ID': guest.id,
-              'List-Unsubscribe': `<mailto:${replyToEmail}?subject=Unsubscribe>`,
-            },
           });
 
           emailSent = true;
