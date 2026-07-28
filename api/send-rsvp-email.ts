@@ -1,9 +1,8 @@
-import { Request, Response } from 'express';
+export default async function handler(req: any, res: any) {
 import nodemailer from 'nodemailer';
 import { Resend } from 'resend';
 import { generateRsvpEmailHtml } from '../src/lib/emailTemplate';
-
-export async function sendRsvpEmailHandler(req: Request, res: Response) {
+ {
   try {
     const { guest, emailAddress } = req.body;
 
