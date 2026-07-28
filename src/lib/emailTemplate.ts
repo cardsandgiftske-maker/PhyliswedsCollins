@@ -44,7 +44,7 @@ async function getCloudinaryQrCodeUrl(guest: RsvpGuest): Promise<string> {
 
 export async function generateRsvpEmailHtml(guest: RsvpGuest, baseUrl: string = 'https://phylisandcollins.wedding'): Promise<string> {
   const qrCodeUrl = await getCloudinaryQrCodeUrl(guest);
-  const couplePhotoUrl = await getCloudinaryCouplePhotoUrl(baseUrl);
+  const couplePhotoUrl = await couplePhotoUrl;
   
   const googleMapsUrl = 'https://www.google.com/maps/search/?api=1&query=-1.2618,36.7905';
   
