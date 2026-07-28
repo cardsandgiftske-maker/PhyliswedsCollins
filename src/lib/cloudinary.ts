@@ -19,8 +19,27 @@ export async function uploadToCloudinary(
   uploadPreset?: string
 ): Promise<string> {
   // Read configured Cloudinary credentials from params or environment variables
-  const activeCloudName = (cloudName?.trim() || import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'b6onpcyk').trim();
-  const activePreset = (uploadPreset?.trim() || import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'philcollins-weddinggallery').trim();
+  let envCloudName: string | undefined;
+  let envPreset: string | undefined;
+
+  if (typeof process !== 'undefined' && process.env) {
+    envCloudName = process.env.VITE_CLOUDINARY_CLOUD_NAME || process.env.CLOUDINARY_CLOUD_NAME;
+    envPreset = process.env.VITE_CLOUDINARY_UPLOAD_PRESET || process.env.CLOUDINARY_UPLOAD_PRESET;
+  }
+  
+  if (!envCloudName || !envPreset) {
+    try {
+      if (import.meta && (import.meta as any).env) {
+        envCloudName = envCloudName || (import.meta as any).env.VITE_CLOUDINARY_CLOUD_NAME;
+        envPreset = envPreset || (import.meta as any).env.VITE_CLOUDINARY_UPLOAD_PRESET;
+      }
+    } catch {
+      // Ignore
+    }
+  }
+
+  const activeCloudName = (cloudName?.trim() || envCloudName || 'dphc0jlnr').trim();
+  const activePreset = (uploadPreset?.trim() || envPreset || 'wedding_photos').trim();
 
   const formData = new FormData();
   formData.append('file', fileOrDataUrl);
