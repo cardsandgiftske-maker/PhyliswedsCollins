@@ -2,6 +2,7 @@ export interface RsvpGuest {
   id: string;
   fullName: string;
   phoneNumber: string;
+  email?: string;
   willAttend: 'yes' | 'no';
   adultsCount: number;
   submittedAt: string;
@@ -15,7 +16,7 @@ export interface ProgramItem {
   title: string;
   description?: string;
   bullets?: string[];
-  isChurch: boolean;
+  isChurch?: boolean;
 }
 
 export interface ColorSwatch {
