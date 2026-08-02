@@ -67,7 +67,7 @@ export default async function handler(req: any, res: any) {
         });
 
         await transporter.sendMail({
-          from: process.env.SMTP_FROM || "Phylis & Collins Wedding" <${smtpUser}>,
+          from: process.env.SMTP_FROM || `"Phylis & Collins Wedding" <${smtpUser}>`,
           to: recipient,
           subject: `✨ Official RSVP Confirmation & Wedding Pass for ${guest.fullName}`,
           html: htmlContent,
