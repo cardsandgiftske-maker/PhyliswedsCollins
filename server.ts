@@ -1,7 +1,7 @@
 import express from 'express';
 import path from 'path';
 import { createServer as createViteServer } from 'vite';
-import { sendRsvpEmailHandler } from './api/send-rsvp-email';
+import  sendRsvpEmailHandler  from './api/send-rsvp-email';
 
 async function startServer() {
   const app = express();
