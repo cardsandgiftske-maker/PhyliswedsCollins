@@ -12,7 +12,7 @@ export default async function handler(req: any, res: any) {
 
     const recipient = emailAddress || guest.email;
     const PORT = 3000;
-    const baseUrl = process.env.APP_URL || http://localhost:${PORT};
+    const baseUrl = process.env.APP_URL || `http://localhost:${PORT}`;
 
     // Generate HTML email content with Cloudinary uploaded image assets
     const htmlContent = await generateRsvpEmailHtml(guest, baseUrl);
@@ -36,7 +36,7 @@ export default async function handler(req: any, res: any) {
         const { data, error } = await resend.emails.send({
           from: fromEmail,
           to: [recipient],
-          subject: ✨ Official RSVP Confirmation & Wedding Pass for ${guest.fullName},
+          subject: `✨ Official RSVP Confirmation & Wedding Pass for ${guest.fullName}`,
           html: htmlContent,
         });
 
@@ -69,7 +69,7 @@ export default async function handler(req: any, res: any) {
         await transporter.sendMail({
           from: process.env.SMTP_FROM || "Phylis & Collins Wedding" <${smtpUser}>,
           to: recipient,
-          subject: ✨ Official RSVP Confirmation & Wedding Pass for ${guest.fullName},
+          subject: `✨ Official RSVP Confirmation & Wedding Pass for ${guest.fullName}`,
           html: htmlContent,
         });
 
