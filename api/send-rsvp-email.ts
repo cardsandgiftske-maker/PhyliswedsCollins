@@ -81,11 +81,11 @@ export default async function handler(req: any, res: any) {
       }
     }
 
-    let message = RSVP Pass generated successfully!;
+    let message = `RSVP Pass generated successfully!`;
     if (emailSent) {
-      message = Official RSVP Confirmation Email delivered to ${recipient} via ${serviceUsed}!;
+      message = `Official RSVP Confirmation Email delivered to ${recipient} via ${serviceUsed}!`;
     } else if (recipient && !resendApiKey && !smtpHost) {
-      message = RSVP Pass recorded for ${recipient}! Set RESEND_API_KEY in environment variables to enable live Resend email delivery.;
+      message = `RSVP Pass recorded for ${recipient}! Set RESEND_API_KEY in environment variables to enable live Resend email delivery.`;
     }
 
     return res.json({
