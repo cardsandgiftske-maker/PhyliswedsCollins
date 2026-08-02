@@ -1,8 +1,8 @@
-export default async function handler(req: any, res: any) {
 import nodemailer from 'nodemailer';
 import { Resend } from 'resend';
 import { generateRsvpEmailHtml } from '../src/lib/emailTemplate';
- {
+
+export default async function handler(req: any, res: any) {
   try {
     const { guest, emailAddress } = req.body;
 
@@ -12,7 +12,7 @@ import { generateRsvpEmailHtml } from '../src/lib/emailTemplate';
 
     const recipient = emailAddress || guest.email;
     const PORT = 3000;
-    const baseUrl = process.env.APP_URL || `http://localhost:${PORT}`;
+    const baseUrl = process.env.APP_URL || http://localhost:${PORT};
 
     // Generate HTML email content with Cloudinary uploaded image assets
     const htmlContent = await generateRsvpEmailHtml(guest, baseUrl);
@@ -36,7 +36,7 @@ import { generateRsvpEmailHtml } from '../src/lib/emailTemplate';
         const { data, error } = await resend.emails.send({
           from: fromEmail,
           to: [recipient],
-          subject: `✨ Official RSVP Confirmation & Wedding Pass for ${guest.fullName}`,
+          subject: ✨ Official RSVP Confirmation & Wedding Pass for ${guest.fullName},
           html: htmlContent,
         });
 
@@ -67,9 +67,9 @@ import { generateRsvpEmailHtml } from '../src/lib/emailTemplate';
         });
 
         await transporter.sendMail({
-          from: process.env.SMTP_FROM || `"Phylis & Collins Wedding" <${smtpUser}>`,
+          from: process.env.SMTP_FROM || "Phylis & Collins Wedding" <${smtpUser}>,
           to: recipient,
-          subject: `✨ Official RSVP Confirmation & Wedding Pass for ${guest.fullName}`,
+          subject: ✨ Official RSVP Confirmation & Wedding Pass for ${guest.fullName},
           html: htmlContent,
         });
 
@@ -81,11 +81,11 @@ import { generateRsvpEmailHtml } from '../src/lib/emailTemplate';
       }
     }
 
-    let message = `RSVP Pass generated successfully!`;
+    let message = RSVP Pass generated successfully!;
     if (emailSent) {
-      message = `Official RSVP Confirmation Email delivered to ${recipient} via ${serviceUsed}!`;
+      message = Official RSVP Confirmation Email delivered to ${recipient} via ${serviceUsed}!;
     } else if (recipient && !resendApiKey && !smtpHost) {
-      message = `RSVP Pass recorded for ${recipient}! Set RESEND_API_KEY in environment variables to enable live Resend email delivery.`;
+      message = RSVP Pass recorded for ${recipient}! Set RESEND_API_KEY in environment variables to enable live Resend email delivery.;
     }
 
     return res.json({
