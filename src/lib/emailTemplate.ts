@@ -1,24 +1,11 @@
 import { RsvpGuest } from '../types';
-const couplePhotoUrl =
-"https://res.cloudinary.com/b6onpcyk/image/upload/v1785263597/carol_and_john_portrait_1784461506194_j2lhcj.jpg"
 
-let cachedCloudinaryCouplePhotoUrl: string | null = null;
-
-  const fallbackUrl = `${baseUrl.replace(/\/$/, '')}/src/assets/images/carol_and_john_portrait_1784461506194.jpg`;
-
-  try {
-    let dataUrl: string | null = null;
-    const localPath = path.join(process.cwd(), 'src/assets/images/carol_and_john_portrait_1784461506194.jpg');
-  } catch (err) {
-    console.warn('Could not upload header couple photo to Cloudinary, using fallback:', err);
-  }
-
-  return fallbackUrl;
-}
+const defaultCouplePhotoUrl =
+  'https://res.cloudinary.com/b6onpcyk/image/upload/v1785263597/carol_and_john_portrait_1784461506194_j2lhcj.jpg';
 
 async function getCloudinaryQrCodeUrl(guest: RsvpGuest): Promise<string> {
   const rawQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
-    `PHYLIS-COLLINS-RSVP-${guest.id}-${guest.fullName}`
+    PHYLIS-COLLINS-RSVP-${guest.id}-${guest.fullName}
   )}&color=5a1d22&bgcolor=FCFAF7`;
 
   try {
@@ -27,13 +14,10 @@ async function getCloudinaryQrCodeUrl(guest: RsvpGuest): Promise<string> {
       const arrayBuffer = await response.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
       const mimeType = response.headers.get('content-type') || 'image/png';
-      const qrDataUrl = `data:${mimeType};base64,${buffer.toString('base64')}`;
+      const qrDataUrl = data:${mimeType};base64,${buffer.toString('base64')};
 
-      const uploadedUrl = await uploadToCloudinary(qrDataUrl);
-      if (uploadedUrl) {
-        console.log(`Successfully uploaded guest (${guest.fullName}) QR code to Cloudinary:`, uploadedUrl);
-        return uploadedUrl;
-      }
+      // If you have a custom Cloudinary uploader helper, call it here
+      return qrDataUrl;
     }
   } catch (err) {
     console.warn('Could not upload QR code to Cloudinary, falling back to raw QR URL:', err);
@@ -42,13 +26,17 @@ async function getCloudinaryQrCodeUrl(guest: RsvpGuest): Promise<string> {
   return rawQrUrl;
 }
 
-export async function generateRsvpEmailHtml(guest: RsvpGuest, baseUrl: string = 'https://phylisandcollins.wedding'): Promise<string> {
+export async function generateRsvpEmailHtml(
+  guest: RsvpGuest,
+  baseUrl: string = 'https://phylisandcollins.wedding'
+): Promise<string> {
   const qrCodeUrl = await getCloudinaryQrCodeUrl(guest);
-  const couplePhotoUrl = await couplePhotoUrl;
-  
+  const couplePhotoUrl = defaultCouplePhotoUrl;
+
   const googleMapsUrl = 'https://www.google.com/maps/search/?api=1&query=-1.2618,36.7905';
-  
-  const googleCalendarUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Phylis+%26+Collins+Wedding&dates=20260822T063000Z/20260822T150000Z&details=Official+Wedding+Celebration+for+Phylis+Nanyama+Sifuna+%26+Collins+Kimenye+Mativo.&location=St+Austin%27s+Catholic+Church%2C+Rhapta+Rd%2C+Westlands%2C+Nairobi';
+
+  const googleCalendarUrl =
+    'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Phylis+%26+Collins+Wedding&dates=20260822T063000Z/20260822T150000Z&details=Official+Wedding+Celebration+for+Phylis+Nanyama+Sifuna+%26+Collins+Kimenye+Mativo.&location=St+Austin%27s+Catholic+Church%2C+Rhapta+Rd%2C+Westlands%2C+Nairobi';
 
   return `
 <!DOCTYPE html>
@@ -178,7 +166,7 @@ export async function generateRsvpEmailHtml(guest: RsvpGuest, baseUrl: string = 
 
           <!-- QR Code Section -->
           <tr>
-            <td align="center" style="padding: 25px 20px; background-color: #fcf8f3; border-top: 1px border-bottom: 1px border #eee6db;">
+            <td align="center" style="padding: 25px 20px; background-color: #fcf8f3; border-top: 1px solid #eee6db; border-bottom: 1px solid #eee6db;">
               <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="background-color: #ffffff; padding: 15px; border-radius: 16px; border: 1px solid #e0d6c8;">
                 <tr>
                   <td align="center">
@@ -186,7 +174,7 @@ export async function generateRsvpEmailHtml(guest: RsvpGuest, baseUrl: string = 
                   </td>
                 </tr>
               </table>
-              <p style="margin: 12px 0 0 0; font-family: sans-serif; font-size: 11px; font-weight: bold; uppercase; letter-spacing: 1.5px; color: #5a1d22;">
+              <p style="margin: 12px 0 0 0; font-family: sans-serif; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 1.5px; color: #5a1d22;">
                 Official Entry Pass &amp; Check-In QR Code
               </p>
               <p style="margin: 4px 0 0 0; font-family: monospace; font-size: 12px; color: #742b31; font-weight: bold;">
