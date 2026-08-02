@@ -12,7 +12,7 @@ export async function sendRsvpEmailHandler(req: any, res: any) {
 
     const recipient = emailAddress || guest.email;
     const PORT = 3000;
-    const baseUrl = process.env.APP_URL || http://localhost:${PORT};
+    const baseUrl = process.env.APP_URL || `http://localhost:${PORT}`;
 
     // Generate HTML email content
     const htmlContent = await generateRsvpEmailHtml(guest, baseUrl);
