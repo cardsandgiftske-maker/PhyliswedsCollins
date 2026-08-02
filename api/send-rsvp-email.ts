@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer';
 import { Resend } from 'resend';
 import { generateRsvpEmailHtml } from '../src/lib/emailTemplate';
 
-export default async function handler(req: any, res: any) {
+export async function sendRsvpEmailHandler(req: any, res: any) {
   try {
     const { guest, emailAddress } = req.body;
 
@@ -12,9 +12,9 @@ export default async function handler(req: any, res: any) {
 
     const recipient = emailAddress || guest.email;
     const PORT = 3000;
-    const baseUrl = process.env.APP_URL || `http://localhost:${PORT}`;
+    const baseUrl = process.env.APP_URL || http://localhost:${PORT};
 
-    // Generate HTML email content with Cloudinary uploaded image assets
+    // Generate HTML email content
     const htmlContent = await generateRsvpEmailHtml(guest, baseUrl);
 
     let emailSent = false;
@@ -36,7 +36,7 @@ export default async function handler(req: any, res: any) {
         const { data, error } = await resend.emails.send({
           from: fromEmail,
           to: [recipient],
-          subject: `✨ Official RSVP Confirmation & Wedding Pass for ${guest.fullName}`,
+          subject: ✨ Official RSVP Confirmation & Wedding Pass for ${guest.fullName},
           html: htmlContent,
         });
 
@@ -67,9 +67,9 @@ export default async function handler(req: any, res: any) {
         });
 
         await transporter.sendMail({
-          from: process.env.SMTP_FROM || `"Phylis & Collins Wedding" <${smtpUser}>`,
+          from: process.env.SMTP_FROM || "Phylis & Collins Wedding" <${smtpUser}>,
           to: recipient,
-          subject: `✨ Official RSVP Confirmation & Wedding Pass for ${guest.fullName}`,
+          subject: ✨ Official RSVP Confirmation & Wedding Pass for ${guest.fullName},
           html: htmlContent,
         });
 
@@ -81,11 +81,11 @@ export default async function handler(req: any, res: any) {
       }
     }
 
-    let message = `RSVP Pass generated successfully!`;
+    let message = RSVP Pass generated successfully!;
     if (emailSent) {
-      message = `Official RSVP Confirmation Email delivered to ${recipient} via ${serviceUsed}!`;
+      message = Official RSVP Confirmation Email delivered to ${recipient} via ${serviceUsed}!;
     } else if (recipient && !resendApiKey && !smtpHost) {
-      message = `RSVP Pass recorded for ${recipient}! Set RESEND_API_KEY in environment variables to enable live Resend email delivery.`;
+      message = RSVP Pass recorded for ${recipient}! Set RESEND_API_KEY in environment variables to enable live Resend email delivery.;
     }
 
     return res.json({
@@ -97,10 +97,13 @@ export default async function handler(req: any, res: any) {
       message,
       previewHtml: htmlContent,
     });
- } catch (error: any) {
-  console.error('Error handling send-rsvp-email endpoint:', error);
-  return res.status(500).json({ 
-    error: error?.message || 'Internal server error processing RSVP email.',
-    details: String(error)
-  });
+  } catch (error: any) {
+    console.error('Error handling send-rsvp-email endpoint:', error);
+    return res.status(500).json({ 
+      error: error?.message || 'Internal server error processing RSVP email.',
+      details: String(error)
+    });
+  }
 }
+
+export default sendRsvpEmailHandler;
