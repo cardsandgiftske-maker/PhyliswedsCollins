@@ -36,7 +36,7 @@ export async function sendRsvpEmailHandler(req: any, res: any) {
         const { data, error } = await resend.emails.send({
           from: fromEmail,
           to: [recipient],
-          subject: ✨ Official RSVP Confirmation & Wedding Pass for ${guest.fullName},
+          subject: `✨ Official RSVP Confirmation & Wedding Pass for ${guest.fullName}`,
           html: htmlContent,
         });
 
@@ -69,7 +69,7 @@ export async function sendRsvpEmailHandler(req: any, res: any) {
         await transporter.sendMail({
           from: process.env.SMTP_FROM || "Phylis & Collins Wedding" <${smtpUser}>,
           to: recipient,
-          subject: ✨ Official RSVP Confirmation & Wedding Pass for ${guest.fullName},
+          subject: `✨ Official RSVP Confirmation & Wedding Pass for ${guest.fullName}`,
           html: htmlContent,
         });
 
