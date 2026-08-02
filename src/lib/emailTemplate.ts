@@ -18,7 +18,7 @@ async function getCloudinaryQrCodeUrl(guest: RsvpGuest): Promise<string> {
         : Buffer.from(arrayBuffer).toString('base64');
       
       const mimeType = response.headers.get('content-type') || 'image/png';
-      return data:${mimeType};base64,${base64};
+      return `data:${mimeType};base64,${base64}`;
     }
   } catch (err) {
     console.warn('Could not process QR code image, falling back to raw URL:', err);
