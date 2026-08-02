@@ -5,7 +5,7 @@ const defaultCouplePhotoUrl =
 
 async function getCloudinaryQrCodeUrl(guest: RsvpGuest): Promise<string> {
   const rawQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
-    PHYLIS-COLLINS-RSVP-${guest.id}-${guest.fullName}
+    `PHYLIS-COLLINS-RSVP-${guest.id}-${guest.fullName}`
   )}&color=5a1d22&bgcolor=FCFAF7`;
 
   try {
