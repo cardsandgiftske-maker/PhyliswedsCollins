@@ -12,7 +12,7 @@ export default async function handler(req: any, res: any) {
 
     const recipient = emailAddress || guest.email;
     const PORT = 3000;
-    const baseUrl = process.env.APP_URL || http://localhost:${PORT};
+    const baseUrl = process.env.APP_URL || 'http://localhost:${PORT}';
 
     // Generate HTML email content with Cloudinary uploaded image assets
     const htmlContent = await generateRsvpEmailHtml(guest, baseUrl);
