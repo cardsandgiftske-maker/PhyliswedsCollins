@@ -59,7 +59,7 @@ export default function RsvpForm() {
         id: 'rsvp-' + Date.now(),
         fullName: fullName.trim(),
         phoneNumber: phoneNumber.trim(),
-        email: email.trim() || undefined,
+        email: email.trim() ||"",
         willAttend,
         adultsCount: willAttend === 'yes' ? adultsCount : 0,
         submittedAt: new Date().toISOString(),
