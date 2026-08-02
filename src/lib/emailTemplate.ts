@@ -5,25 +5,27 @@ const defaultCouplePhotoUrl =
 
 async function getCloudinaryQrCodeUrl(guest: RsvpGuest): Promise<string> {
   const rawQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
-    `PHYLIS-COLLINS-RSVP-${guest.id}-${guest.fullName}`
+    PHYLIS-COLLINS-RSVP-${guest.id}-${guest.fullName}
   )}&color=5a1d22&bgcolor=FCFAF7`;
 
   try {
     const response = await fetch(rawQrUrl);
     if (response.ok) {
       const arrayBuffer = await response.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
+      // Safe base64 conversion across all JS runtimes
+      const base64 = typeof window !== 'undefined' 
+        ? btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)))
+        : Buffer.from(arrayBuffer).toString('base64');
+      
       const mimeType = response.headers.get('content-type') || 'image/png';
-      const qrDataUrl = `data:${mimeType};base64,${buffer.toString('base64')}`;
-
-      // If you have a custom Cloudinary uploader helper, call it here
-      return qrDataUrl;
+      return data:${mimeType};base64,${base64};
     }
   } catch (err) {
-    console.warn('Could not upload QR code to Cloudinary, falling back to raw QR URL:', err);
+    console.warn('Could not process QR code image, falling back to raw URL:', err);
   }
 
   return rawQrUrl;
+}
 }
 
 export async function generateRsvpEmailHtml(
