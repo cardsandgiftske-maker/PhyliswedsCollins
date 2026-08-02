@@ -26,7 +26,6 @@ async function getCloudinaryQrCodeUrl(guest: RsvpGuest): Promise<string> {
 
   return rawQrUrl;
 }
-}
 
 export async function generateRsvpEmailHtml(
   guest: RsvpGuest,
