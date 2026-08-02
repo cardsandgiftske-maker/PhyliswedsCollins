@@ -14,7 +14,7 @@ async function getCloudinaryQrCodeUrl(guest: RsvpGuest): Promise<string> {
       const arrayBuffer = await response.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
       const mimeType = response.headers.get('content-type') || 'image/png';
-      const qrDataUrl = data:${mimeType};base64,${buffer.toString('base64')};
+      const qrDataUrl = `data:${mimeType};base64,${buffer.toString('base64')}`;
 
       // If you have a custom Cloudinary uploader helper, call it here
       return qrDataUrl;
