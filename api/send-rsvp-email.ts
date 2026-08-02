@@ -97,8 +97,10 @@ export default async function handler(req: any, res: any) {
       message,
       previewHtml: htmlContent,
     });
-  } catch (error: any) {
-    console.error('Error handling send-rsvp-email endpoint:', error);
-    return res.status(500).json({ error: 'Internal server error processing RSVP email.' });
-  }
+ } catch (error: any) {
+  console.error('Error handling send-rsvp-email endpoint:', error);
+  return res.status(500).json({ 
+    error: error?.message || 'Internal server error processing RSVP email.',
+    details: String(error)
+  });
 }
