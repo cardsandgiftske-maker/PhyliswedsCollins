@@ -10,7 +10,14 @@ export async function sendRsvpEmailHandler(req: any, res: any) {
       return res.status(400).json({ error: 'Missing guest details in request.' });
     }
 
-    const recipient = emailAddress || guest.email;
+    const recipient = emailAddress || guest?.email;
+
+    if (!recipient) {
+      return res.status(400).json({ 
+        error: 'No valid recipient email provided in request (guest.email or emailAddress).' 
+      });
+    }
+
     const PORT = 3000;
     const baseUrl = process.env.APP_URL || `http://localhost:${PORT}`;
 
@@ -26,23 +33,25 @@ export async function sendRsvpEmailHandler(req: any, res: any) {
     const smtpUser = process.env.SMTP_USER;
     const smtpPass = process.env.SMTP_PASS;
 
-    // 1. Try sending via Resend first if RESEND_API_KEY is configured
-    if (recipient && resendApiKey) {
+    // Hardcoded verified sender address using your custom domain
+    const senderEmail = process.env.RESEND_FROM_EMAIL || 'Phylis & Collins Wedding <philcollinsinvite@chartisanddonis.co.ke>';
+
+    // 1. Try sending via Resend first
+    if (resendApiKey) {
       try {
         serviceUsed = 'Resend';
         const resend = new Resend(resendApiKey);
-        const fromEmail = process.env.RESEND_FROM_EMAIL || 'Phylis & Collins Wedding <onboarding@resend.dev>';
-        
-        const { data, error } = await resend.emails.send({
-          from: fromEmail,
+
+        const response = await resend.emails.send({
+          from: senderEmail,
           to: [recipient],
           subject: `✨ Official RSVP Confirmation & Wedding Pass for ${guest.fullName}`,
           html: htmlContent,
         });
 
-        if (error) {
-          console.error('Resend delivery error:', error);
-          emailError = typeof error === 'object' ? (error as any).message || JSON.stringify(error) : String(error);
+        if (response.error) {
+          console.error('Resend delivery error:', response.error);
+          emailError = response.error.message || JSON.stringify(response.error);
         } else {
           emailSent = true;
         }
@@ -52,8 +61,8 @@ export async function sendRsvpEmailHandler(req: any, res: any) {
       }
     }
 
-    // 2. Fallback to SMTP nodemailer if Resend not sent and SMTP details provided
-    if (!emailSent && recipient && smtpHost && smtpUser && smtpPass) {
+    // 2. Fallback to SMTP nodemailer if Resend fails or is missing
+    if (!emailSent && smtpHost && smtpUser && smtpPass) {
       try {
         serviceUsed = 'SMTP';
         const transporter = nodemailer.createTransport({
@@ -67,7 +76,7 @@ export async function sendRsvpEmailHandler(req: any, res: any) {
         });
 
         await transporter.sendMail({
-          from: process.env.SMTP_FROM || `"Phylis & Collins Wedding" <${smtpUser}>`,
+          from: process.env.SMTP_FROM || senderEmail,
           to: recipient,
           subject: `✨ Official RSVP Confirmation & Wedding Pass for ${guest.fullName}`,
           html: htmlContent,
@@ -81,19 +90,22 @@ export async function sendRsvpEmailHandler(req: any, res: any) {
       }
     }
 
+    // Construct response status message
     let message = `RSVP Pass generated successfully!`;
     if (emailSent) {
       message = `Official RSVP Confirmation Email delivered to ${recipient} via ${serviceUsed}!`;
-    } else if (recipient && !resendApiKey && !smtpHost) {
-      message = `RSVP Pass recorded for ${recipient}! Set RESEND_API_KEY in environment variables to enable live Resend email delivery.`;
+    } else if (!resendApiKey && !smtpHost) {
+      message = `RSVP Pass recorded for ${recipient}! Set RESEND_API_KEY in environment variables to send emails.`;
+    } else if (emailError) {
+      message = `Failed to deliver email to ${recipient}. Error: ${emailError}`;
     }
 
-    return res.json({
-      success: true,
+    return res.status(emailSent ? 200 : 500).json({
+      success: emailSent,
       emailSent,
       serviceUsed,
       emailError,
-      recipient: recipient || null,
+      recipient,
       message,
       previewHtml: htmlContent,
     });
