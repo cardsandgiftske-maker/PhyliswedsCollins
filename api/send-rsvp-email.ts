@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 import { Resend } from 'resend';
-import { generateRsvpEmailHtml } from '../src/lib/emailTemplate';
+import { generateRsvpEmailHtml } from '@/lib/emailTemplate';
 
 export async function sendRsvpEmailHandler(req: any, res: any) {
   try {
