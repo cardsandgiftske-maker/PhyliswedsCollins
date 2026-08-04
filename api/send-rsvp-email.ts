@@ -34,7 +34,7 @@ async function getCloudinaryQrCodeUrl(guest: RsvpGuest): Promise<string> {
 
 export async function generateRsvpEmailHtml(
   guest: RsvpGuest,
-  baseUrl: string = 'https://phylisandcollins.wedding'
+  baseUrl: string = 'https://phylisweds-collins.vercel.app'
 ): Promise<string> {
   const qrCodeUrl = await getCloudinaryQrCodeUrl(guest);
   const couplePhotoUrl = defaultCouplePhotoUrl;
@@ -74,7 +74,7 @@ export async function generateRsvpEmailHtml(
               <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                 <tr>
                   <td align="center" style="padding: 8px 20px; border-radius: 25px; background-color: #5a1d22; border: 2px solid #D4AF37; text-align: center; vertical-align: middle;">
-                    <span style="font-family: Georgia, serif; font-size: 16px; font-weight: bold; color: #D4AF37; letter-spacing: 1.5px;">PhilCollins</span>
+                    <span style="font-family: Georgia, serif; font-size: 16px; font-weight: bold; color: #D4AF37; letter-spacing: 1.5px;">Phylis &amp; Collins</span>
                   </td>
                 </tr>
               </table>
@@ -189,7 +189,7 @@ export async function generateRsvpEmailHtml(
             </td>
           </tr>
 
-          <!-- Action Buttons (Google Maps, Calendar, Minisite) -->
+          <!-- Action Buttons -->
           <tr>
             <td align="center" style="padding: 30px 20px 25px 20px;">
               <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 450px;">
@@ -232,7 +232,7 @@ export async function generateRsvpEmailHtml(
                 Phylis &amp; Collins Wedding
               </p>
               <p style="margin: 5px 0 0 0; font-family: sans-serif; font-size: 11px; color: #dbabae;">
-                #PhilCollins2026 • We look forward to celebrating with you!
+                #PhylisAndCollins2026 • We look forward to celebrating with you!
               </p>
             </td>
           </tr>
@@ -262,10 +262,9 @@ export async function sendRsvpEmailHandler(req: any, res: any) {
       });
     }
 
-    const PORT = 3000;
-    const baseUrl = process.env.APP_URL || `http://localhost:${PORT}`;
+    const baseUrl = process.env.APP_URL || 'https://phylisweds-collins.vercel.app';
 
-    // Generate HTML email content using function declared in scope
+    // Generate HTML email content
     const htmlContent = await generateRsvpEmailHtml(guest, baseUrl);
 
     let emailSent = false;
@@ -279,7 +278,7 @@ export async function sendRsvpEmailHandler(req: any, res: any) {
 
     const senderEmail = process.env.RESEND_FROM_EMAIL || 'Phylis & Collins Wedding <philcollinsinvite@chartisanddonis.co.ke>';
 
-    // 1. Try sending via Resend first
+    // 1. Try sending via Resend
     if (resendApiKey) {
       try {
         serviceUsed = 'Resend';
@@ -304,7 +303,7 @@ export async function sendRsvpEmailHandler(req: any, res: any) {
       }
     }
 
-    // 2. Fallback to SMTP nodemailer if Resend fails or is missing
+    // 2. Fallback to SMTP
     if (!emailSent && smtpHost && smtpUser && smtpPass) {
       try {
         serviceUsed = 'SMTP';
@@ -349,7 +348,6 @@ export async function sendRsvpEmailHandler(req: any, res: any) {
       emailError,
       recipient,
       message,
-      previewHtml: htmlContent,
     });
   } catch (error: any) {
     console.error('Error handling send-rsvp-email endpoint:', error);
