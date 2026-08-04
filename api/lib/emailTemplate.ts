@@ -1,15 +1,43 @@
 import { RsvpGuest } from '../types';
 
-export function generateRsvpEmailHtml(guest: RsvpGuest, baseUrl: string = 'https://phylisandcollins.wedding'): string {
-  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
+const defaultCouplePhotoUrl =
+  'https://res.cloudinary.com/b6onpcyk/image/upload/v1785263597/carol_and_john_portrait_1784461506194_j2lhcj.jpg';
+
+async function getCloudinaryQrCodeUrl(guest: RsvpGuest): Promise<string> {
+  const rawQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
     `PHYLIS-COLLINS-RSVP-${guest.id}-${guest.fullName}`
   )}&color=5a1d22&bgcolor=FCFAF7`;
 
-  const couplePhotoUrl = `${baseUrl.replace(/\/$/, '')}/src/assets/images/carol_and_john_portrait_1784461506194.jpg`;
-  
+  try {
+    const response = await fetch(rawQrUrl);
+    if (response.ok) {
+      const arrayBuffer = await response.arrayBuffer();
+      // Safe base64 conversion across all JS runtimes
+      const base64 = typeof window !== 'undefined' 
+        ? btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)))
+        : Buffer.from(arrayBuffer).toString('base64');
+      
+      const mimeType = response.headers.get('content-type') || 'image/png';
+      return `data:${mimeType};base64,${base64}`;
+    }
+  } catch (err) {
+    console.warn('Could not process QR code image, falling back to raw URL:', err);
+  }
+
+  return rawQrUrl;
+}
+
+export async function generateRsvpEmailHtml(
+  guest: RsvpGuest,
+  baseUrl: string = 'https://phylisandcollins.wedding'
+): Promise<string> {
+  const qrCodeUrl = await getCloudinaryQrCodeUrl(guest);
+  const couplePhotoUrl = defaultCouplePhotoUrl;
+
   const googleMapsUrl = 'https://www.google.com/maps/search/?api=1&query=-1.2618,36.7905';
-  
-  const googleCalendarUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Phylis+%26+Collins+Wedding&dates=20260822T063000Z/20260822T150000Z&details=Official+Wedding+Celebration+for+Phylis+Nanyama+Sifuna+%26+Collins+Kimenye+Mativo.&location=St+Austin%27s+Catholic+Church%2C+Rhapta+Rd%2C+Westlands%2C+Nairobi';
+
+  const googleCalendarUrl =
+    'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Phylis+%26+Collins+Wedding&dates=20260822T063000Z/20260822T150000Z&details=Official+Wedding+Celebration+for+Phylis+Nanyama+Sifuna+%26+Collins+Kimenye+Mativo.&location=St+Austin%27s+Catholic+Church%2C+Rhapta+Rd%2C+Westlands%2C+Nairobi';
 
   return `
 <!DOCTYPE html>
@@ -139,7 +167,7 @@ export function generateRsvpEmailHtml(guest: RsvpGuest, baseUrl: string = 'https
 
           <!-- QR Code Section -->
           <tr>
-            <td align="center" style="padding: 25px 20px; background-color: #fcf8f3; border-top: 1px border-bottom: 1px border #eee6db;">
+            <td align="center" style="padding: 25px 20px; background-color: #fcf8f3; border-top: 1px solid #eee6db; border-bottom: 1px solid #eee6db;">
               <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="background-color: #ffffff; padding: 15px; border-radius: 16px; border: 1px solid #e0d6c8;">
                 <tr>
                   <td align="center">
@@ -147,7 +175,7 @@ export function generateRsvpEmailHtml(guest: RsvpGuest, baseUrl: string = 'https
                   </td>
                 </tr>
               </table>
-              <p style="margin: 12px 0 0 0; font-family: sans-serif; font-size: 11px; font-weight: bold; uppercase; letter-spacing: 1.5px; color: #5a1d22;">
+              <p style="margin: 12px 0 0 0; font-family: sans-serif; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 1.5px; color: #5a1d22;">
                 Official Entry Pass &amp; Check-In QR Code
               </p>
               <p style="margin: 4px 0 0 0; font-family: monospace; font-size: 12px; color: #742b31; font-weight: bold;">
